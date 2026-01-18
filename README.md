@@ -1,4 +1,4 @@
-# Romi Robot Demos
+# Robotics with Pololu Romi
 
 Comprehensive collection of robot simulation, control, and visualization tools for the Pololu Romi robot platform. Includes Arduino firmware, C++ Qt applications, and Python simulations for forward/inverse kinematics, motor control, and waypoint navigation.
 
