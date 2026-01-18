@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.8.2)
+
+project(romi_robot_demos)
+
+# Build common libraries first
+add_subdirectory(helper_opengl helper_opengl)
+add_subdirectory(robot_sim_models robot_sim_models)
+add_subdirectory(virtual_controller virtual_controller)
+
+# Build applications
+add_subdirectory(inverse_kinematics_app inverse_kinematics_app)
+add_subdirectory(inverse_kinematics_app_i2c inverse_kinematics_app_i2c)
+add_subdirectory(inverse_kinematics_sim_app inverse_kinematics_sim_app)
+add_subdirectory(inverse_kinematics_viewer inverse_kinematics_viewer)
+add_subdirectory(forward_kinematics_sim forward_kinematics_sim)
