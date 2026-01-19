@@ -76,7 +76,13 @@ python inverse_kinematics_sim.py
 ### PyBullet Simulations
 ```bash
 # Install dependencies
-pip install pybullet numpy pybullet_data
+pip install pybullet numpy
+
+# macOS users: Use conda instead for better compatibility
+# conda create -n pybullet_env python=3.9
+# conda activate pybullet_env
+# conda install -c conda-forge pybullet
+# pip install numpy
 
 # Run basic inverse kinematics simulation
 cd pybullet_simulation
@@ -109,8 +115,7 @@ python inverse_kinematics_cam_viz.py
 
 ### PyBullet
 - Python 3.8+
-- pybullet (physics simulation engine)
-- pybullet_data (required for default assets)
+- pybullet (physics simulation engine, includes pybullet_data for default assets)
 - NumPy
 
 ---

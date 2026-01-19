@@ -41,7 +41,7 @@ source pybullet_env/bin/activate
 # pybullet_env\Scripts\activate
 
 # Install packages
-pip install pybullet numpy pybullet_data
+pip install pybullet numpy
 ```
 
 #### Option 2: Using `conda`
@@ -54,14 +54,31 @@ conda create -n pybullet_env python=3.8
 conda activate pybullet_env
 
 # Install packages
-pip install pybullet numpy pybullet_data
+pip install pybullet numpy
+```
+
+#### macOS-Specific Installation
+
+**For macOS users**, PyBullet installation via conda-forge is recommended for better compatibility:
+
+```bash
+# Create conda environment with Python 3.9
+conda create -n pybullet_env python=3.9
+
+# Activate environment
+conda activate pybullet_env
+
+# Install pybullet from conda-forge
+conda install -c conda-forge pybullet
+
+# Install remaining packages via pip
+pip install numpy
 ```
 
 ### Python Packages
 
-- `pybullet` - Physics simulation engine
+- `pybullet` - Physics simulation engine (includes `pybullet_data` module for default assets like ground plane `plane.urdf`)
 - `numpy` - Numerical computations
-- `pybullet_data` - Required for default assets like ground plane (`plane.urdf`)
 
 **Note:** Always activate your virtual environment before running the simulation.
 
@@ -85,7 +102,7 @@ The simulation depends on the `python_simulations` package in the workspace root
 
 2. **Install Python dependencies:**
    ```bash
-   pip install pybullet numpy pybullet_data
+   pip install pybullet numpy
    ```
 
 3. **Ensure workspace structure:**
