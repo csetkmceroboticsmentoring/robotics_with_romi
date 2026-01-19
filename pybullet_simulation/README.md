@@ -10,6 +10,8 @@ This simulation demonstrates autonomous waypoint following using:
 - **Motor Dynamics**: Realistic wheel encoder models with motor dynamics and PID velocity control
 - **Physics Simulation**: PyBullet physics engine for accurate robot motion
 
+![Romi PyBullet Simulation](romi_pybullet.gif)
+
 ## Features
 
 - ✅ Realistic motor dynamics with encoder feedback

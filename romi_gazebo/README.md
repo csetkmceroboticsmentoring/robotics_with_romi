@@ -10,6 +10,8 @@ This plugin implements a **hybrid approach** for wheel encoder modeling:
 - **WheelWithEncoder** models motor dynamics and encoder response
 - **Odometry** is published based on encoder readings
 
+![Gazebo Romi Simulation](gazebo_romi_simulation.gif)
+
 ## Features
 
 - ✅ Realistic motor dynamics with PID control
