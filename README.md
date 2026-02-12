@@ -37,6 +37,9 @@ ROS2 and Gazebo integration for the Romi robot, including encoder-based odometry
 ### 📁 `ros2_docker/`
 Docker containerization for ROS2 Humble and Gazebo Fortress development environment. Provides reproducible containerized setup for ROS2 development.
 
+### 📁 `cad/`
+CAD models and designs for the Pololu Romi robot. Includes FreeCAD models with STEP files of the Pololu Romi robot, Raspberry Pi, and A1M28 Lidar. See the [CAD README](cad/README.md) for more details.
+
 ---
 
 ## Quick Start
