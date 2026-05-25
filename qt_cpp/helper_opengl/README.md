@@ -402,7 +402,8 @@ Contributions are welcome! Please ensure all code:
 
 ## See Also
 
-- Python version: See `../helper_py/` for a Python/PyQt6 equivalent of this library
+- **Tutorial**: Step-by-step lessons for beginners — [`../opengl_tutorial/`](../opengl_tutorial/)
+- Python version: See `../../python_simulations/helper_py/` for a Python/PySide6 equivalent of this library
 - Qt OpenGL Documentation: https://doc.qt.io/qt-5/qtopengl-index.html
 - Eigen Documentation: https://eigen.tuxfamily.org/
 
