@@ -19,7 +19,7 @@ This directory contains desktop applications, simulation servers, and supporting
 ### Libraries
 
 - **`helper_opengl/`**: OpenGL utility library for Qt applications. Manages buffers, shaders, textures, and provides common rendering functionality.
-- **`opengl_tutorial/`**: Step-by-step beginner lessons (7 runnable apps) that teach OpenGL through `helper_opengl`. See [`opengl_tutorial/README.md`](opengl_tutorial/README.md).
+- **`opengl_tutorial/`**: Step-by-step beginner lessons (8 runnable apps) that teach OpenGL through `helper_opengl`. Python mirror: [`python_simulations/opengl_tutorial/`](../python_simulations/opengl_tutorial/). See [`opengl_tutorial/README.md`](opengl_tutorial/README.md).
 - **`robot_sim_models/`**: C++ library with PID controller and wheel dynamics models. Provides realistic motor simulation with second-order dynamics and encoder noise.
 - **`virtual_controller/`**: Qt widget library providing virtual joystick controls. Reusable multi-touch enabled joystick components for robot control interfaces.
 

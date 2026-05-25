@@ -65,7 +65,7 @@ Each folder contains `lesson.md` (concepts and exercises) and a documented `main
 
 ## Python track
 
-A parallel intro using [`helper_py`](../../python_simulations/helper_py/) lives in [`python_simulations/opengl_tutorial/`](../../python_simulations/opengl_tutorial/).
+Eight matching lessons using [`helper_py`](../../python_simulations/helper_py/): [`python_simulations/opengl_tutorial/`](../../python_simulations/opengl_tutorial/). Concepts and exercises are the same; run with `python opengl_tutorial/NN_.../main.py`.
 
 ## Reference
 

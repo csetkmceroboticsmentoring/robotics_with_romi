@@ -26,7 +26,7 @@ Arduino firmware for the Romi 32U4 robot. Includes implementations for waypoint 
 C++ Qt applications with OpenGL visualization for robot control and simulation. Built with Qt5 (Qt6 compatible with minor changes). Contains desktop applications, simulation servers, viewer tools, and supporting libraries. Beginner OpenGL lessons: [`qt_cpp/opengl_tutorial/`](qt_cpp/opengl_tutorial/).
 
 ### 📁 `python_simulations/`
-Python-based robot simulations using PySide6 (Qt6 bindings) and OpenGL for interactive development and testing. Includes forward/inverse kinematics simulations and shared robot models.
+Python-based robot simulations using PySide6 (Qt6 bindings) and OpenGL for interactive development and testing. Includes forward/inverse kinematics simulations, shared robot models, and beginner OpenGL lessons: [`python_simulations/opengl_tutorial/`](python_simulations/opengl_tutorial/).
 
 ### 📁 `pybullet_simulation/`
 PyBullet-based physics simulation for realistic robot motion and camera visualization. Includes inverse kinematics simulations with optional camera support.

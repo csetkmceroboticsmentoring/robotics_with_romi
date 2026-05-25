@@ -3,7 +3,9 @@ Shader program management for OpenGL using PyOpenGL.
 Uses PySide6's QObject for lifecycle management only.
 """
 
+from ctypes import c_void_p
 from typing import List, Tuple, Optional, Union
+
 import numpy as np
 from PySide6.QtCore import QObject
 from OpenGL.GL import *
@@ -61,7 +63,8 @@ class Program(QObject):
             RuntimeError: If shader compilation or linking fails
         """
         super().__init__(parent)
-        
+        self._vao = None
+
         # Create program using PyOpenGL
         self._program = glCreateProgram()
         
@@ -112,12 +115,28 @@ class Program(QObject):
     
     def __del__(self):
         """Cleanup program on deletion."""
+        if hasattr(self, '_vao') and self._vao:
+            try:
+                glDeleteVertexArrays(1, [self._vao])
+            except Exception:
+                pass
         if hasattr(self, '_program') and self._program != 0:
             try:
                 glDeleteProgram(self._program)
-            except:
+            except Exception:
                 pass
-    
+
+    def _bind_vao(self) -> None:
+        """Bind a VAO when supported (required for attrib pointers on core contexts)."""
+        if self._vao is None:
+            try:
+                created = glGenVertexArrays(1)
+                self._vao = int(created[0]) if hasattr(created, '__len__') else int(created)
+            except Exception:
+                self._vao = 0
+        if self._vao:
+            glBindVertexArray(self._vao)
+
     def use(self):
         """Activate this shader program."""
         glUseProgram(self._program)
@@ -250,7 +269,9 @@ class Program(QObject):
             if components is None:
                 components = 3  # Default to 3 components
             
-            glVertexAttribPointer(loc, components, GL_FLOAT, GL_FALSE, 0, None)
+            # PyOpenGL must use c_void_p(0), not None, for offset-into-bound-VBO.
+            self._bind_vao()
+            glVertexAttribPointer(loc, components, GL_FLOAT, GL_FALSE, 0, c_void_p(0))
             # Don't unbind here - keep the buffer bound for the draw call
         elif isinstance(data, (list, np.ndarray)):
             # Direct data attribute

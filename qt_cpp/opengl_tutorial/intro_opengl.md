@@ -210,7 +210,7 @@ You still issue **`glClear`**, **`glDrawArrays`**, and **`glDrawElements`** your
 
 4. **One shared static library** — Built once as `libhelper_opengl.a` and linked by the tutorial lessons and other Qt apps in this repo, so shader and buffer logic is implemented in one place.
 
-5. **Python counterpart** — [`helper_py`](../../python_simulations/helper_py/) mirrors the same ideas for PySide6 and PyOpenGL if you prefer Python.
+5. **Python track** — Eight matching lessons with [`helper_py`](../../python_simulations/helper_py/) in [`python_simulations/opengl_tutorial/`](../../python_simulations/opengl_tutorial/).
 
 ### Typical use in application code
 
