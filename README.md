@@ -23,7 +23,7 @@ All projects share common robot parameters and control algorithms, allowing seam
 Arduino firmware for the Romi 32U4 robot. Includes implementations for waypoint navigation, velocity control, and motor characterization.
 
 ### 📁 `qt_cpp/`
-C++ Qt applications with OpenGL visualization for robot control and simulation. Built with Qt5 (Qt6 compatible with minor changes). Contains desktop applications, simulation servers, viewer tools, and supporting libraries.
+C++ Qt applications with OpenGL visualization for robot control and simulation. Built with Qt5 (Qt6 compatible with minor changes). Contains desktop applications, simulation servers, viewer tools, and supporting libraries. Beginner OpenGL lessons: [`qt_cpp/opengl_tutorial/`](qt_cpp/opengl_tutorial/).
 
 ### 📁 `python_simulations/`
 Python-based robot simulations using PySide6 (Qt6 bindings) and OpenGL for interactive development and testing. Includes forward/inverse kinematics simulations and shared robot models.
