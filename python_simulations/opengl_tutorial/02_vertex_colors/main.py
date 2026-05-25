@@ -8,7 +8,14 @@ _TUTORIAL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SIM = os.path.dirname(_TUTORIAL)
 sys.path[:0] = [_SIM, _TUTORIAL]
 
-from OpenGL.GL import GL_COLOR_BUFFER_BIT, GL_TRIANGLES, glClear, glClearColor, glDrawArrays
+from OpenGL.GL import (
+    GL_COLOR_BUFFER_BIT,
+    GL_TRIANGLES,
+    glClear,
+    glClearColor,
+    glDrawArrays,
+    glViewport,
+)
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
 
 from helper_py import ArrayBuffer, GL_FRAGMENT_SHADER, GL_STATIC_DRAW, GL_VERTEX_SHADER, Program
@@ -55,8 +62,6 @@ class VertexColorsWidget(QOpenGLWidget):
         )
 
     def resizeGL(self, width, height):
-        from OpenGL.GL import glViewport
-
         glViewport(0, 0, width, height)
 
     def paintGL(self):

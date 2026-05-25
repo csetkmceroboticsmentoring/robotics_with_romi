@@ -9,6 +9,9 @@ from __future__ import annotations
 import os
 import sys
 
+from PySide6.QtGui import QSurfaceFormat
+from PySide6.QtWidgets import QApplication
+
 TUTORIAL_DIR = os.path.dirname(os.path.abspath(__file__))
 PYTHON_SIM_ROOT = os.path.dirname(TUTORIAL_DIR)
 
@@ -20,8 +23,6 @@ def ensure_paths() -> None:
 
 
 def configure_gl_format(*, depth_bits: int = 0) -> None:
-    from PySide6.QtGui import QSurfaceFormat
-
     fmt = QSurfaceFormat()
     fmt.setRenderableType(QSurfaceFormat.OpenGL)
     fmt.setVersion(4, 1)
@@ -39,8 +40,6 @@ def run_lesson(
     *,
     depth_bits: int = 0,
 ) -> None:
-    from PySide6.QtWidgets import QApplication
-
     ensure_paths()
     configure_gl_format(depth_bits=depth_bits)
     app = QApplication(sys.argv)

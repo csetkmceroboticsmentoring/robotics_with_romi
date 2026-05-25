@@ -21,6 +21,7 @@ from OpenGL.GL import (
     glClear,
     glClearColor,
     glDrawElements,
+    glViewport,
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QImage
@@ -129,8 +130,6 @@ class TextureQuadWidget(QOpenGLWidget):
         )
 
     def resizeGL(self, width, height):
-        from OpenGL.GL import glViewport
-
         glViewport(0, 0, width, height)
 
     def paintGL(self):

@@ -15,6 +15,7 @@ from OpenGL.GL import (
     glClear,
     glClearColor,
     glDrawArrays,
+    glViewport,
 )
 from PySide6.QtCore import QTimer
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
@@ -60,8 +61,6 @@ class DynamicLineWidget(QOpenGLWidget):
         self.update()
 
     def resizeGL(self, width, height):
-        from OpenGL.GL import glViewport
-
         glViewport(0, 0, width, height)
 
     def paintGL(self):

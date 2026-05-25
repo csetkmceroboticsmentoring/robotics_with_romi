@@ -20,6 +20,7 @@ from OpenGL.GL import (
     glClearColor,
     glDrawArrays,
     glEnable,
+    glViewport,
 )
 from PySide6.QtCore import Qt
 from PySide6.QtOpenGLWidgets import QOpenGLWidget
@@ -107,8 +108,6 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
         )
 
     def resizeGL(self, width, height):
-        from OpenGL.GL import glViewport
-
         glViewport(0, 0, width, height)
         self._aspect = width / height if height > 0 else 1.0
 
