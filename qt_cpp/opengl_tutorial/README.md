@@ -1,6 +1,6 @@
 # OpenGL Tutorial (helper_opengl)
 
-Hands-on lessons for learning 2D and 3D OpenGL through the [`helper_opengl`](../helper_opengl/) library and Qt's `QOpenGLWidget` (lessons 1–7 are 2D; lesson 8 introduces 3D). No prior OpenGL experience required.
+Hands-on lessons for learning 2D and 3D OpenGL through the [`helper_opengl`](../helper_opengl/) library and Qt's `QOpenGLWidget` (lessons 1–7 are 2D; lessons 8–9 are 3D). No prior OpenGL experience required.
 
 ## Start here
 
@@ -30,7 +30,7 @@ cmake --build . -j$(nproc)
 
 Requires: Qt5 (Widgets, OpenGL), Eigen3, CMake 3.8+.
 
-Executables: `opengl_lesson_01` … `opengl_lesson_08` in `build/<lesson_dir>/` (paths differ slightly between A and B).
+Executables: `opengl_lesson_01` … `opengl_lesson_09` in `build/<lesson_dir>/` (paths differ slightly between A and B).
 
 ## Run a lesson
 
@@ -39,6 +39,7 @@ After **Option A**:
 ```bash
 ./01_hello_triangle/opengl_lesson_01
 ./08_rotating_triangle_3d/opengl_lesson_08
+./09_obj_viewer/opengl_lesson_09
 ```
 
 After **Option B**:
@@ -60,8 +61,9 @@ After **Option B**:
 | 6 | [06_dynamic_line_strip](06_dynamic_line_strip/) | `GL_DYNAMIC_DRAW`, growing polyline | `opengl_lesson_06` |
 | 7 | [07_mini_path_viewer](07_mini_path_viewer/) | Grid + trajectory (capstone) | `opengl_lesson_07` |
 | 8 | [08_rotating_triangle_3d](08_rotating_triangle_3d/) | 3D triangle, roll/pitch/yaw with Eigen | `opengl_lesson_08` |
+| 9 | [09_obj_viewer](09_obj_viewer/) | Load `shuttle.obj`, shaded mesh, mouse rotate | `opengl_lesson_09` |
 
-Each folder contains `lesson.md` (concepts and exercises) and a documented `main.cpp` (file header, pipeline notes, and inline comments).
+Each folder contains `lesson.md` (concepts and exercises) and source with comments. Lesson 9 loads a bundled mesh automatically (no open dialog).
 
 ## Python track
 
@@ -70,3 +72,8 @@ Eight matching lessons using [`helper_py`](../../python_simulations/helper_py/):
 ## Reference
 
 - Library API: [`helper_opengl/README.md`](../helper_opengl/README.md)
+
+<p align="center">
+  <img src="lesson_07.png" width="49%" />
+  <img src="lesson_09.png" width="49%" />
+</p>

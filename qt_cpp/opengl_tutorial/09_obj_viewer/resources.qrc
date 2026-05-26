@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <qresource prefix="/shuttle">
+        <file alias="shuttle.obj">shuttle/shuttle.obj</file>
+        <file alias="vp.mtl">shuttle/vp.mtl</file>
+    </qresource>
+</RCC>
