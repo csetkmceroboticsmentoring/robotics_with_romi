@@ -1,6 +1,6 @@
 # Lesson 9: OBJ Viewer
 
-Loads **`shuttle/shuttle.obj`** at startup (no file dialog). Demonstrates parsing Wavefront OBJ/MTL, uploading triangles to VBOs, simple Phong-style lighting, and trackball rotation with the mouse.
+Loads **`shuttle/shuttle.obj`** at startup. Demonstrates parsing Wavefront OBJ/MTL, uploading triangles to VBOs, simple Phong-style lighting, and trackball rotation with the mouse.
 
 ## Build and run
 

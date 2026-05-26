@@ -63,7 +63,7 @@ After **Option B**:
 | 8 | [08_rotating_triangle_3d](08_rotating_triangle_3d/) | 3D triangle, roll/pitch/yaw with Eigen | `opengl_lesson_08` |
 | 9 | [09_obj_viewer](09_obj_viewer/) | Load `shuttle.obj`, shaded mesh, mouse rotate | `opengl_lesson_09` |
 
-Each folder contains `lesson.md` (concepts and exercises) and source with comments. Lesson 9 loads a bundled mesh automatically (no open dialog).
+Each folder contains `lesson.md` (concepts and exercises) and source with comments. Lesson 9 loads a bundled mesh automatically.
 
 ## Python track
 
