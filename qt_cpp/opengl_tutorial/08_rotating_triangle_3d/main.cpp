@@ -1,6 +1,6 @@
 /**
  * @file main.cpp
- * @brief Lesson 8 — 3D triangle with roll, pitch, and yaw (Eigen3).
+ * @brief Lesson 8 — 3D triangular pyramid with roll, pitch, and yaw (Eigen3).
  *
  * Demonstrates the model–view–projection (MVP) pipeline:
  *   gl_Position = projection * view * model * vec4(coord, 1)
@@ -10,7 +10,8 @@
  * - **View**: translates the world along −Z so geometry sits in front of the camera.
  * - **Projection**: perspective matrix (FOV, aspect, near/far) maps eye space to clip space.
  *
- * Coordinates: angles are radians. Triangle vertices live in the XY plane at z = 0.
+ * Coordinates: angles are radians. Pyramid is four triangles in one draw call;
+ * per-vertex colors (same color repeated for each triangle's three corners).
  *
  * Controls (widget must have focus):
  *   Q/E — roll −/+    W/S — pitch +/−    A/D — yaw −/+    R — reset angles
@@ -42,21 +43,24 @@ using opengl::Program;
 // Shaders (GLSL 1.20)
 // -----------------------------------------------------------------------------
 
-/** Passes 3D position through combined MVP; GPU divides by w for perspective. */
+/** Passes 3D position through combined MVP; forwards per-vertex color. */
 static const GLchar kVertexShader[] = R"(
   #version 120
   attribute vec3 coord;
+  attribute vec3 vert_color;
   uniform mat4 mvp;
+  varying vec3 frag_color;
   void main(void) {
     gl_Position = mvp * vec4(coord, 1.0);
+    frag_color = vert_color;
   })";
 
-/** Solid face color (same for all fragments). */
+/** Interpolated color from the vertex shader. */
 static const GLchar kFragmentShader[] = R"(
   #version 120
-  uniform vec3 color;
+  varying vec3 frag_color;
   void main(void) {
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(frag_color, 1.0);
   })";
 
 // -----------------------------------------------------------------------------
@@ -161,13 +165,33 @@ protected:
     initializeOpenGLFunctions();
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);  // nearer fragments win when triangles overlap
+    glEnable(GL_CULL_FACE);   // hide back-facing triangles as the pyramid spins
+
+    // Triangular pyramid: four triangles (12 vertices), CCW when viewed from outside.
+    const Vector3f apex{0.0f, 0.0f, 0.55f};
+    const Vector3f b0{-0.55f, -0.35f, -0.35f};
+    const Vector3f b1{0.55f, -0.35f, -0.35f};
+    const Vector3f b2{0.0f, 0.45f, -0.35f};
 
     const std::vector<Vector3f> vertices = {
-      {0.0f, 0.6f, 0.0f},
-      {-0.6f, -0.4f, 0.0f},
-      {0.6f, -0.4f, 0.0f},
+      b0, b1, b2,       // base
+      apex, b1, b0,     // side
+      apex, b2, b1,     // side
+      apex, b0, b2,     // side
     };
     vbo_ = new ArrayBuffer<Vector3f>(GL_STATIC_DRAW, vertices, this);
+
+    const Vector3f blue{0.0f, 0.0f, 1.0f};
+    const Vector3f red{1.0f, 0.0f, 0.0f};
+    const Vector3f green{0.0f, 1.0f, 0.0f};
+    const Vector3f yellow{1.0f, 0.85f, 0.25f};
+    const std::vector<Vector3f> colors = {
+      blue, blue, blue,
+      red, red, red,
+      green, green, green,
+      yellow, yellow, yellow,
+    };
+    color_buffer_ = new ArrayBuffer<Vector3f>(GL_STATIC_DRAW, colors, this);
 
     program_ = new Program({
       {GL_VERTEX_SHADER, kVertexShader},
@@ -181,14 +205,14 @@ protected:
     aspect_ = (height > 0) ? static_cast<float>(width) / static_cast<float>(height) : 1.0f;
   }
 
-  /** One frame: clear, build MVP, draw triangle. */
+  /** One frame: clear, build MVP, draw the pyramid in one call. */
   void paintGL() override {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Projection: camera lens (FOV 45°, clip planes 0.1 … 10).
     const Matrix4f projection = perspective(45.0f, aspect_, 0.1f, 10.0f);
 
-    // View: push world back so triangle at origin is visible (camera looks down −Z).
+    // View: push world back so pyramid at origin is visible (camera looks down −Z).
     Matrix4f view = Matrix4f::Identity();
     view(2, 3) = -2.8f;
 
@@ -198,10 +222,10 @@ protected:
     // Apply transforms right-to-left on column vectors: clip = P * V * M * v.
     const Matrix4f mvp = projection * view * model;
 
-    Program::Use use(*program_, {"coord"});
+    Program::Use use(*program_, {"coord", "vert_color"});
     program_->setAttribute("coord", *vbo_);
+    program_->setAttribute("vert_color", *color_buffer_);
     program_->setUniform("mvp", mvp);
-    program_->setUniform("color", 0.35f, 0.75f, 1.0f);
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(vbo_->size()));
   }
 
@@ -226,6 +250,7 @@ protected:
 
 private:
   ArrayBuffer<Vector3f>* vbo_ = nullptr;
+  ArrayBuffer<Vector3f>* color_buffer_ = nullptr;
   Program* program_ = nullptr;
 
   float aspect_ = 1.0f;   ///< width/height for projection
@@ -247,7 +272,7 @@ int main(int argc, char** argv) {
   QApplication app(argc, argv);
   RotatingTriangle3DWidget widget;
   widget.setWindowTitle(
-    "Lesson 8: 3D Triangle (Q/E roll, W/S pitch, A/D yaw, R reset)");
+    "Lesson 8: 3D Pyramid (Q/E roll, W/S pitch, A/D yaw, R reset)");
   widget.resize(640, 480);
   widget.show();
   return app.exec();

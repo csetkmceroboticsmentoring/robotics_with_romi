@@ -1,11 +1,12 @@
-# Lesson 8: 3D Triangle — Roll, Pitch, Yaw (Eigen3)
+# Lesson 8: 3D Pyramid — Roll, Pitch, Yaw (Eigen3)
 
 ## What you will learn
 
 - 3D vertex positions (`Vector3f`, `ArrayBuffer<Vector3f>`)
 - A **`mat4 mvp`** uniform: model × view × projection
 - Roll, pitch, yaw: explicit Rx, Ry, Rz (cos/sin) in code; Eigen `AngleAxis` shown commented as the easy alternative
-- Depth testing so the triangle occludes correctly in 3D
+- Per-vertex colors (`vert_color` attribute) with one `glDrawArrays` for the whole pyramid
+- Depth testing and back-face culling so the pyramid occludes correctly in 3D
 
 ## Roll, pitch, yaw (this lesson)
 
@@ -65,7 +66,7 @@ cmake --build . --target opengl_lesson_08
 
 ## Expected result
 
-A blue triangle in 3D; use the keyboard to change roll, pitch, and yaw. Depth testing keeps edges correct as it rotates.
+A triangular pyramid in 3D with a different color on each face (pure blue base, pure red / pure green sides, yellow fourth side). Use the keyboard to change roll, pitch, and yaw.
 
 ## Exercises
 

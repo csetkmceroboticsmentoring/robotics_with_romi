@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Lesson 8 — 3D triangle with roll, pitch, and yaw (numpy).
+Lesson 8 — 3D triangular pyramid with roll, pitch, and yaw (numpy).
 
 Demonstrates the model–view–projection (MVP) pipeline:
   gl_Position = projection @ view @ model @ vec4(coord, 1)
+
+Pyramid geometry: four triangles (12 vertices) in one glDrawArrays call.
+Per-vertex colors (vert_color attribute) — same RGB repeated for each
+triangle's three corners so each face is a solid color.
 
 Controls (widget must have focus):
   Q/E — roll −/+    W/S — pitch +/−    A/D — yaw −/+    R — reset angles
@@ -22,12 +26,15 @@ _SIM = os.path.dirname(_TUTORIAL)
 sys.path[:0] = [_SIM, _TUTORIAL]
 
 from OpenGL.GL import (
+    GL_BACK,
     GL_COLOR_BUFFER_BIT,
+    GL_CULL_FACE,
     GL_DEPTH_BUFFER_BIT,
     GL_DEPTH_TEST,
     GL_TRIANGLES,
     glClear,
     glClearColor,
+    glCullFace,
     glDrawArrays,
     glEnable,
     glViewport,
@@ -41,17 +48,20 @@ from _common import run_lesson
 VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec3 coord;
+attribute vec3 vert_color;
 uniform mat4 mvp;
+varying vec3 frag_color;
 void main(void) {
   gl_Position = mvp * vec4(coord, 1.0);
+  frag_color = vert_color;
 }
 """
 
 FRAGMENT_SHADER_SOURCE = """
 #version 120
-uniform vec3 color;
+varying vec3 frag_color;
 void main(void) {
-  gl_FragColor = vec4(color, 1.0);
+  gl_FragColor = vec4(frag_color, 1.0);
 }
 """
 
@@ -111,9 +121,36 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
 
     def initializeGL(self):
         glClearColor(0.0, 0.0, 0.0, 1.0)
-        glEnable(GL_DEPTH_TEST)
-        vertices = [[0.0, 0.6, 0.0], [-0.6, -0.4, 0.0], [0.6, -0.4, 0.0]]
+        glEnable(GL_DEPTH_TEST)  # nearer fragments win when triangles overlap
+        glEnable(GL_CULL_FACE)   # hide back-facing triangles as the pyramid spins
+        glCullFace(GL_BACK)
+
+        # Triangular pyramid: four triangles (12 vertices), CCW when viewed from outside.
+        apex = [0.0, 0.0, 0.55]
+        b0 = [-0.55, -0.35, -0.35]
+        b1 = [0.55, -0.35, -0.35]
+        b2 = [0.0, 0.45, -0.35]
+
+        vertices = [
+            b0, b1, b2,       # base
+            apex, b1, b0,     # side
+            apex, b2, b1,     # side
+            apex, b0, b2,     # side
+        ]
         self._vbo = ArrayBuffer(GL_STATIC_DRAW, data=vertices, parent=self)
+
+        blue = [0.0, 0.0, 1.0]
+        red = [1.0, 0.0, 0.0]
+        green = [0.0, 1.0, 0.0]
+        yellow = [1.0, 0.85, 0.25]
+        colors = [
+            blue, blue, blue,
+            red, red, red,
+            green, green, green,
+            yellow, yellow, yellow,
+        ]
+        self._color_buffer = ArrayBuffer(GL_STATIC_DRAW, data=colors, parent=self)
+
         self._program = Program(
             [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
@@ -125,16 +162,18 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
         projection = perspective(45.0, self._aspect, 0.1, 10.0)
         view = np.eye(4, dtype=np.float32)
-        view[2, 3] = -2.8  # push world back along −Z
+        view[2, 3] = -2.8  # view: push world back along −Z
         model = model_matrix(self._roll, self._pitch, self._yaw)
-        mvp = projection @ view @ model
-        with Program.Use(self._program, ["coord"]):
+        mvp = projection @ view @ model  # clip = P @ V @ M @ v
+
+        with Program.Use(self._program, ["coord", "vert_color"]):
             self._program.set_attribute("coord", self._vbo, components=3)
+            self._program.set_attribute("vert_color", self._color_buffer, components=3)
             self._program.set_uniform("mvp", mvp)
-            self._program.set_uniform("color", 0.35, 0.75, 1.0)
-            glDrawArrays(GL_TRIANGLES, 0, self._vbo.size())
+            glDrawArrays(GL_TRIANGLES, 0, self._vbo.size())  # one draw for whole pyramid
 
     def keyPressEvent(self, event):
         step = 0.08  # radians per key press
@@ -161,6 +200,6 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
 if __name__ == "__main__":
     run_lesson(
         RotatingTriangle3DWidget,
-        "Python Lesson 8: 3D Triangle (Q/E roll, W/S pitch, A/D yaw, R reset)",
+        "Python Lesson 8: 3D Pyramid (Q/E roll, W/S pitch, A/D yaw, R reset)",
         depth_bits=24,
     )

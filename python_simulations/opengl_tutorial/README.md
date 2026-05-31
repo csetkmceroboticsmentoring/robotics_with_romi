@@ -41,7 +41,7 @@ python main.py
 | 5 | [05_texture_quad](05_texture_quad/) | `Texture2D`, A/D rotate, R reset | [lesson.md](../../qt_cpp/opengl_tutorial/05_texture_quad/lesson.md) |
 | 6 | [06_dynamic_line_strip](06_dynamic_line_strip/) | `GL_DYNAMIC_DRAW`, spiral timer | [lesson.md](../../qt_cpp/opengl_tutorial/06_dynamic_line_strip/lesson.md) |
 | 7 | [07_mini_path_viewer](07_mini_path_viewer/) | Grid + trail + `mat3` marker | [lesson.md](../../qt_cpp/opengl_tutorial/07_mini_path_viewer/lesson.md) |
-| 8 | [08_rotating_triangle_3d](08_rotating_triangle_3d/) | MVP, roll/pitch/yaw | [lesson.md](../../qt_cpp/opengl_tutorial/08_rotating_triangle_3d/lesson.md) |
+| 8 | [08_rotating_triangle_3d](08_rotating_triangle_3d/) | MVP, pyramid, per-vertex colors, roll/pitch/yaw | [lesson.md](../../qt_cpp/opengl_tutorial/08_rotating_triangle_3d/lesson.md) |
 
 Each folder has `main.py` (runnable) and `lesson.md` (Python-specific run notes).
 
