@@ -49,3 +49,8 @@ Each folder has `main.py` (runnable) and `lesson.md` (Python-specific run notes)
 
 - Library API: [`helper_py/README`](../helper_py/) — use `example_triangles.py` for a minimal `helper_py` sample
 - C++ library: [`helper_opengl/README.md`](../../qt_cpp/helper_opengl/README.md)
+
+<p align="center">
+  <img src="../../qt_cpp/opengl_tutorial/lesson_07.gif" width="49%" />
+  <img src="../../qt_cpp/opengl_tutorial/lesson_09.gif" width="49%" />
+</p>
