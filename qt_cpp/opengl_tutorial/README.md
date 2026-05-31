@@ -74,6 +74,6 @@ Eight matching lessons using [`helper_py`](../../python_simulations/helper_py/):
 - Library API: [`helper_opengl/README.md`](../helper_opengl/README.md)
 
 <p align="center">
-  <img src="lesson_07.png" width="49%" />
-  <img src="lesson_09.png" width="49%" />
+  <img src="lesson_07.gif" width="49%" />
+  <img src="lesson_09.gif" width="49%" />
 </p>
