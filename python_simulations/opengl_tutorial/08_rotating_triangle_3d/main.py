@@ -1,5 +1,15 @@
 #!/usr/bin/env python3
-"""Lesson 8 — 3D triangle MVP. Concepts: qt_cpp/opengl_tutorial/08_rotating_triangle_3d/lesson.md"""
+"""
+Lesson 8 — 3D triangle with roll, pitch, and yaw (numpy).
+
+Demonstrates the model–view–projection (MVP) pipeline:
+  gl_Position = projection @ view @ model @ vec4(coord, 1)
+
+Controls (widget must have focus):
+  Q/E — roll −/+    W/S — pitch +/−    A/D — yaw −/+    R — reset angles
+
+Concepts: qt_cpp/opengl_tutorial/08_rotating_triangle_3d/lesson.md
+"""
 
 import math
 import os
@@ -28,7 +38,7 @@ from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from helper_py import ArrayBuffer, GL_FRAGMENT_SHADER, GL_STATIC_DRAW, GL_VERTEX_SHADER, Program
 from _common import run_lesson
 
-VERTEX_SHADER = """
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec3 coord;
 uniform mat4 mvp;
@@ -37,7 +47,7 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform vec3 color;
 void main(void) {
@@ -47,6 +57,7 @@ void main(void) {
 
 
 def perspective(fov_y_deg: float, aspect: float, z_near: float, z_far: float) -> np.ndarray:
+    """OpenGL-style perspective matrix (column vectors; GPU divides by w)."""
     f = 1.0 / math.tan(fov_y_deg * 0.5 * math.pi / 180.0)
     m = np.zeros((4, 4), dtype=np.float32)
     m[0, 0] = f / aspect
@@ -79,6 +90,7 @@ def rotation_z(angle: float) -> np.ndarray:
 
 
 def rotation_from_roll_pitch_yaw(roll: float, pitch: float, yaw: float) -> np.ndarray:
+    """R = Rz(yaw) @ Ry(pitch) @ Rx(roll)."""
     return rotation_z(yaw) @ rotation_y(pitch) @ rotation_x(roll)
 
 
@@ -103,7 +115,7 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
         vertices = [[0.0, 0.6, 0.0], [-0.6, -0.4, 0.0], [0.6, -0.4, 0.0]]
         self._vbo = ArrayBuffer(GL_STATIC_DRAW, data=vertices, parent=self)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
 
@@ -115,7 +127,7 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
         projection = perspective(45.0, self._aspect, 0.1, 10.0)
         view = np.eye(4, dtype=np.float32)
-        view[2, 3] = -2.8
+        view[2, 3] = -2.8  # push world back along −Z
         model = model_matrix(self._roll, self._pitch, self._yaw)
         mvp = projection @ view @ model
         with Program.Use(self._program, ["coord"]):
@@ -125,7 +137,7 @@ class RotatingTriangle3DWidget(QOpenGLWidget):
             glDrawArrays(GL_TRIANGLES, 0, self._vbo.size())
 
     def keyPressEvent(self, event):
-        step = 0.08
+        step = 0.08  # radians per key press
         if event.key() == Qt.Key_Q:
             self._roll -= step
         elif event.key() == Qt.Key_E:

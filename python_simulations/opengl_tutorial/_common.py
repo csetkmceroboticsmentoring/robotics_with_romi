@@ -1,7 +1,9 @@
 """
 Shared setup for python_simulations/opengl_tutorial lessons.
 
-Adds python_simulations/ (helper_py) and this directory to sys.path.
+- ensure_paths: import helper_py when running a lesson script directly.
+- configure_gl_format: OpenGL 4.1 compatibility profile for GLSL #version 120.
+- run_lesson: create QApplication, widget, and event loop.
 """
 
 from __future__ import annotations
@@ -17,12 +19,14 @@ PYTHON_SIM_ROOT = os.path.dirname(TUTORIAL_DIR)
 
 
 def ensure_paths() -> None:
+    """Allow `from helper_py import ...` and `from _common import ...`."""
     for path in (PYTHON_SIM_ROOT, TUTORIAL_DIR):
         if path not in sys.path:
             sys.path.insert(0, path)
 
 
 def configure_gl_format(*, depth_bits: int = 0) -> None:
+    """Must run before QApplication when using a custom GL format (lesson 8: depth_bits=24)."""
     fmt = QSurfaceFormat()
     fmt.setRenderableType(QSurfaceFormat.OpenGL)
     fmt.setVersion(4, 1)

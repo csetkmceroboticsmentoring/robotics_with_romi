@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Lesson 3 — uniform mat3 scale. Concepts: qt_cpp/opengl_tutorial/03_uniform_transform/lesson.md"""
+"""
+Lesson 3 — 2D uniform transform (mat3) for scaling.
+
+The vertex shader multiplies each 2D point (as homogeneous vec3) by `mat`.
+Controls: +/= zoom in, − zoom out (click widget for focus).
+
+Concepts: qt_cpp/opengl_tutorial/03_uniform_transform/lesson.md
+"""
 
 import os
 import sys
@@ -24,7 +31,7 @@ from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from helper_py import ArrayBuffer, GL_FRAGMENT_SHADER, GL_STATIC_DRAW, GL_VERTEX_SHADER, Program
 from _common import run_lesson
 
-VERTEX_SHADER = """
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec2 coord;
 uniform mat3 mat;
@@ -34,7 +41,7 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform vec3 color;
 void main(void) {
@@ -51,12 +58,13 @@ class UniformTransformWidget(QOpenGLWidget):
 
     def initializeGL(self):
         glClearColor(0.0, 0.0, 0.0, 1.0)
+        # Closed square as LINE_STRIP (5 points, first == last).
         square = [
             [-0.25, -0.25], [0.25, -0.25], [0.25, 0.25], [-0.25, 0.25], [-0.25, -0.25],
         ]
         self._line_buffer = ArrayBuffer(GL_STATIC_DRAW, data=square, parent=self)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
 

@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Lesson 5 — Textured quad. Concepts: qt_cpp/opengl_tutorial/05_texture_quad/lesson.md"""
+"""
+Lesson 5 — Textured quad (UV coordinates + sampler2D).
+
+- coord: vertex position in NDC (rotated with uniform mat3).
+- tex_coord: UV in [0,1] for sampling the image on the GPU.
+- Fragment shader uses texture unit 0 (uniform sampler2D texture = 0).
+
+Controls (click window for focus): A/D rotate, R reset.
+Concepts: qt_cpp/opengl_tutorial/05_texture_quad/lesson.md
+"""
 
 import math
 import os
@@ -38,7 +47,7 @@ from helper_py import (
 )
 from _common import run_lesson
 
-VERTEX_SHADER = """
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec2 coord;
 attribute vec2 tex_coord;
@@ -51,7 +60,7 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform sampler2D texture;
 varying vec2 v_tex_coord;
@@ -64,6 +73,7 @@ TEXTURE_NAME = "tkmce.jpeg"
 
 
 def rotation_matrix_2d(angle: float) -> np.ndarray:
+    """2D rotation about the origin (angle in radians)."""
     c, s = math.cos(angle), math.sin(angle)
     mat = np.eye(3, dtype=np.float32)
     mat[0, 0] = c
@@ -74,6 +84,7 @@ def rotation_matrix_2d(angle: float) -> np.ndarray:
 
 
 def make_checkerboard(size: int = 128, cells: int = 8) -> tuple[int, int, bytes]:
+    """CPU fallback image when tkmce.jpeg is missing."""
     cell = size // cells
     data = np.zeros((size, size, 4), dtype=np.uint8)
     for y in range(size):
@@ -115,13 +126,14 @@ class TextureQuadWidget(QOpenGLWidget):
     def initializeGL(self):
         glClearColor(0.0, 0.0, 0.0, 1.0)
         corners = [[-0.5, -0.4], [0.5, -0.4], [0.5, 0.4], [-0.5, 0.4]]
+        # UV origin is bottom-left in OpenGL texture space.
         tex_coords = [[0.0, 1.0], [1.0, 1.0], [1.0, 0.0], [0.0, 0.0]]
         indices = [0, 1, 2, 0, 2, 3]
         self._vertex_buffer = ArrayBuffer(GL_STATIC_DRAW, data=corners, parent=self)
         self._tex_buffer = ArrayBuffer(GL_STATIC_DRAW, data=tex_coords, parent=self)
         self._index_buffer = ElementArrayBuffer(GL_STATIC_DRAW, data=indices, parent=self)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
         w, h, pixels = load_tkmce_or_checkerboard()
@@ -140,7 +152,7 @@ class TextureQuadWidget(QOpenGLWidget):
             self._program.set_attribute("tex_coord", self._tex_buffer, components=2)
             self._program.set_uniform("mat", mat)
             self._texture.bind(GL_TEXTURE0)
-            self._program.set_uniform("texture", 0)
+            self._program.set_uniform("texture", 0)  # sampler2D → texture unit index
             self._index_buffer.bind()
             glDrawElements(
                 GL_TRIANGLES, self._index_buffer.size(), GL_UNSIGNED_SHORT, None

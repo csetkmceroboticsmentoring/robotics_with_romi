@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-"""Lesson 4 — Indexed quad. Concepts: qt_cpp/opengl_tutorial/04_indexed_quad/lesson.md"""
+"""
+Lesson 4 — Indexed drawing with ElementArrayBuffer.
+
+A quad uses 4 unique corners but 6 indices (two triangles: 0-1-2 and 0-2-3).
+glDrawElements looks up vertices by index instead of drawing them in order.
+
+Concepts: qt_cpp/opengl_tutorial/04_indexed_quad/lesson.md
+"""
 
 import os
 import sys
@@ -29,7 +36,7 @@ from helper_py import (
 )
 from _common import run_lesson
 
-VERTEX_SHADER = """
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec2 coord;
 void main(void) {
@@ -37,7 +44,7 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform vec3 color;
 void main(void) {
@@ -54,7 +61,7 @@ class IndexedQuadWidget(QOpenGLWidget):
         self._vertex_buffer = ArrayBuffer(GL_STATIC_DRAW, data=corners, parent=self)
         self._index_buffer = ElementArrayBuffer(GL_STATIC_DRAW, data=indices, parent=self)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
 
@@ -67,6 +74,7 @@ class IndexedQuadWidget(QOpenGLWidget):
             self._program.set_attribute("coord", self._vertex_buffer, components=2)
             self._program.set_uniform("color", 0.85, 0.45, 0.1)
             self._index_buffer.bind()
+            # Indices start at offset 0 in the bound element array buffer.
             glDrawElements(
                 GL_TRIANGLES, self._index_buffer.size(), GL_UNSIGNED_SHORT, None
             )

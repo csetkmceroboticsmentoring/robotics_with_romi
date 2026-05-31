@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
-"""Lesson 1 — First triangle (NDC). Concepts: qt_cpp/opengl_tutorial/01_hello_triangle/lesson.md"""
+"""
+Lesson 1 — First triangle (2D, normalized device coordinates).
+
+Pipeline per frame:
+  clear → Program.Use → set_attribute(VBO) → set_uniform(color) → glDrawArrays
+
+Vertices are already in NDC (−1…1): no model/view/projection matrices yet.
+Concepts: qt_cpp/opengl_tutorial/01_hello_triangle/lesson.md
+"""
 
 import os
 import sys
@@ -21,7 +29,8 @@ from PySide6.QtOpenGLWidgets import QOpenGLWidget
 from helper_py import ArrayBuffer, GL_FRAGMENT_SHADER, GL_STATIC_DRAW, GL_VERTEX_SHADER, Program
 from _common import run_lesson
 
-VERTEX_SHADER = """
+# Vertex: pass 2D position straight to clip space (z=0, w=1).
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec2 coord;
 void main(void) {
@@ -29,7 +38,8 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+# Fragment: one RGB uniform for the whole triangle.
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform vec3 color;
 void main(void) {
@@ -44,7 +54,7 @@ class HelloTriangleWidget(QOpenGLWidget):
         vertices = [[0.0, 0.5], [-0.5, -0.5], [0.5, -0.5]]
         self._vbo = ArrayBuffer(GL_STATIC_DRAW, data=vertices, parent=self)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
 
@@ -53,6 +63,7 @@ class HelloTriangleWidget(QOpenGLWidget):
 
     def paintGL(self):
         glClear(GL_COLOR_BUFFER_BIT)
+        # Program.Use enables the coord attribute; release on exit from with-block.
         with Program.Use(self._program, ["coord"]):
             self._program.set_attribute("coord", self._vbo, components=2)
             self._program.set_uniform("color", 1.0, 0.0, 0.0)

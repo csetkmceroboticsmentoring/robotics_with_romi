@@ -1,5 +1,14 @@
 #!/usr/bin/env python3
-"""Lesson 7 — Mini path viewer. Concepts: qt_cpp/opengl_tutorial/07_mini_path_viewer/lesson.md"""
+"""
+Lesson 7 — Capstone: static grid + dynamic path + position marker.
+
+Combines lessons 3 (mat3), 6 (dynamic buffer), and line/triangle drawing:
+  - Grid: GL_STATIC_DRAW, GL_LINES
+  - Trail: GL_DYNAMIC_DRAW, GL_LINE_STRIP, grows each timer tick
+  - Marker: static body-frame triangle; pose (rotate + translate) via uniform mat3
+
+Concepts: qt_cpp/opengl_tutorial/07_mini_path_viewer/lesson.md
+"""
 
 import math
 import os
@@ -34,7 +43,7 @@ from helper_py import (
 )
 from _common import run_lesson
 
-VERTEX_SHADER = """
+VERTEX_SHADER_SOURCE = """
 #version 120
 attribute vec2 coord;
 uniform mat3 mat;
@@ -44,7 +53,7 @@ void main(void) {
 }
 """
 
-FRAGMENT_SHADER = """
+FRAGMENT_SHADER_SOURCE = """
 #version 120
 uniform vec3 color;
 void main(void) {
@@ -54,6 +63,7 @@ void main(void) {
 
 
 def pose_matrix(heading: float, pos: np.ndarray) -> np.ndarray:
+    """2D pose: rotate by heading, translate to pos."""
     c, s = math.cos(heading), math.sin(heading)
     mat = np.eye(3, dtype=np.float32)
     mat[0, 0] = c
@@ -79,7 +89,7 @@ class MiniPathViewerWidget(QOpenGLWidget):
         self._traj_buffer = ArrayBuffer(GL_DYNAMIC_DRAW, max_items=2000, parent=self)
         self._traj_buffer.load(self._traj_points)
         self._program = Program(
-            [(GL_VERTEX_SHADER, VERTEX_SHADER), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER)],
+            [(GL_VERTEX_SHADER, VERTEX_SHADER_SOURCE), (GL_FRAGMENT_SHADER, FRAGMENT_SHADER_SOURCE)],
             parent=self,
         )
         self._timer = QTimer(self)
@@ -87,6 +97,7 @@ class MiniPathViewerWidget(QOpenGLWidget):
         self._timer.start(40)
 
     def _init_grid(self):
+        """11×11 grid of lines in NDC (−1…1)."""
         points = []
         num_lines = 11
         spacing = 2.0 / (num_lines - 1)
@@ -99,6 +110,7 @@ class MiniPathViewerWidget(QOpenGLWidget):
         self._grid_buffer = ArrayBuffer(GL_STATIC_DRAW, data=points, parent=self)
 
     def _init_marker(self):
+        """Arrowhead in body frame (tip +X); world pose applied in _draw_marker."""
         s = 0.03
         body = [[s, 0.0], [-0.5 * s, 0.5 * s], [-0.5 * s, -0.5 * s]]
         self._marker_buffer = ArrayBuffer(GL_STATIC_DRAW, data=body, parent=self)
@@ -133,6 +145,7 @@ class MiniPathViewerWidget(QOpenGLWidget):
             glDrawArrays(mode, 0, buffer.size())
 
     def _draw_marker(self, screen_mat):
+        # Static marker VBO; only the mat3 uniform changes each frame.
         marker_mat = screen_mat @ pose_matrix(self._heading, self._pos)
         with Program.Use(self._program, ["coord"]):
             self._program.set_attribute("coord", self._marker_buffer, components=2)
